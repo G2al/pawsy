@@ -1,4 +1,5 @@
-const API_URL = window.location.origin;
+var API_URL = window.API_URL || window.location.origin;
+window.API_URL = API_URL;
 
 /* 
   Template Name: Pawsy - Pet Services Booking App
