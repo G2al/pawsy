@@ -1,0 +1,20 @@
+{
+  "name": "Pawsy",
+  "short_name": "Pawsy",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6E0D25",
+  "icons": [
+    {
+      "src": "/img/logo-pawsy.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/logo-pawsy.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
