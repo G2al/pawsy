@@ -1,3 +1,5 @@
+const API_URL = window.location.origin;
+
 /* 
   Template Name: Pawsy - Pet Services Booking App
   Version: 1.0

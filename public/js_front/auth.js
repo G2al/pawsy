@@ -1,5 +1,5 @@
 // Configurazione API
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = window.location.origin;
 
 // Mostra errore su campo specifico
 function showFieldError(fieldId, message) {
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             try {
-                const response = await fetch(`${API_URL}/register`, {
+                const response = await fetch(`${API_URL}/api/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             try {
-                const response = await fetch(`${API_URL}/login`, {
+                const response = await fetch(`${API_URL}/api/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const email = document.getElementById('email').value.trim();
 
             try {
-                const response = await fetch(`${API_URL}/forgot-password`, {
+                const response = await fetch(`${API_URL}/api/forgot-password`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -356,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch(`${API_URL}/reset-password`, {
+                const response = await fetch(`${API_URL}/api/reset-password`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -454,7 +454,7 @@ async function logout() {
     }
     
     try {
-        await fetch(`${API_URL}/logout`, {
+        await fetch(`${API_URL}/api/logout`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

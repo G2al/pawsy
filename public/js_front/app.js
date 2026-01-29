@@ -1,5 +1,5 @@
 // Configurazione API
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = window.location.origin;
 
 // Controlla se l'utente è loggato
 function checkAuth() {
@@ -128,7 +128,7 @@ async function loadUserData() {
     if (!token) return null;
     
     try {
-        const response = await fetch(`${API_URL}/user`, {
+        const response = await fetch(`${API_URL}/api/user`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json'
@@ -154,7 +154,7 @@ async function loadUserData() {
 // Carica servizi disponibili
 async function loadServices() {
     try {
-        const response = await fetch(`${API_URL}/services`, {
+        const response = await fetch(`${API_URL}/api/services`, {
             headers: {
                 'Accept': 'application/json'
             }
@@ -178,7 +178,7 @@ async function loadMyPets() {
     const token = localStorage.getItem('token');
     
     try {
-        const response = await fetch(`${API_URL}/my-pets`, {
+        const response = await fetch(`${API_URL}/api/my-pets`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json'
@@ -203,7 +203,7 @@ async function loadAvailableSlots(serviceId, date) {
     const token = localStorage.getItem('token');
     
     try {
-        const response = await fetch(`${API_URL}/available-slots?service_id=${serviceId}&date=${date}`, {
+        const response = await fetch(`${API_URL}/api/available-slots?service_id=${serviceId}&date=${date}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json'
@@ -263,7 +263,7 @@ async function createBooking(bookingData) {
     const token = localStorage.getItem('token');
     
     try {
-        const response = await fetch(`${API_URL}/bookings`, {
+        const response = await fetch(`${API_URL}/api/bookings`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -288,7 +288,7 @@ async function logout() {
     
     if (token) {
         try {
-            await fetch(`${API_URL}/logout`, {
+            await fetch(`${API_URL}/api/logout`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
