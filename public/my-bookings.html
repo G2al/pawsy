@@ -239,7 +239,7 @@
         const token = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`${API_URL}/my-bookings`, {
+            const response = await fetch(`${API_URL}/api/my-bookings`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -478,7 +478,7 @@
         const token = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`${API_URL}/bookings/${bookingId}/cancel`, {
+            const response = await fetch(`${API_URL}/api/bookings/${bookingId}/cancel`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

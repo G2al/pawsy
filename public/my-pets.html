@@ -379,7 +379,7 @@
             const token = localStorage.getItem('token');
             
             try {
-                const response = await fetch(`${API_URL}/my-pets`, {
+                const response = await fetch(`${API_URL}/api/my-pets`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
@@ -543,7 +543,7 @@
             const token = localStorage.getItem('token');
             
             try {
-                const response = await fetch(`${API_URL}/my-pets`, {
+                const response = await fetch(`${API_URL}/api/my-pets`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
@@ -583,7 +583,7 @@
             submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Salvataggio...';
             
             try {
-                const url = petId ? `${API_URL}/pets/${petId}` : `${API_URL}/pets`;
+                const url = petId ? `${API_URL}/api/pets/${petId}` : `${API_URL}/api/pets`;
                 const method = petId ? 'POST' : 'POST';
                 
                 if (petId) {
@@ -641,7 +641,7 @@
             deleteConfirmLoading.classList.remove('d-none');
             
             try {
-                const response = await fetch(`${API_URL}/pets/${pendingDeletePetId}`, {
+                const response = await fetch(`${API_URL}/api/pets/${pendingDeletePetId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`,
