@@ -1,7 +1,7 @@
 {
   "name": "Pawsy",
   "short_name": "Pawsy",
-  "start_url": "/index.html",
+  "start_url": "/sign-in.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#6E0D25",
