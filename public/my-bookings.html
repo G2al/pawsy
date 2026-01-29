@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/logo-pawsy.png" type="image/png">
+    <title>Pawsy - Le Mie Prenotazioni</title>
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="vender/bootstrap/css/bootstrap.min.css">
+    <!-- Custom css -->
+    <link rel="stylesheet" href="css_front/style.css">
+    <style>
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-badge.confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-badge.completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .status-badge.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status-badge.in_progress {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        .status-badge.no_show {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+        
+        .booking-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .next-booking-card {
+            background: linear-gradient(135deg, #6E0D25 0%, #A33A4C 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 16px rgba(110, 13, 37, 0.3);
+        }
+        
+        .next-booking-card .pet-name {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .next-booking-card .service-name {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .next-booking-card .booking-time {
+            background: rgba(255,255,255,0.2);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+        
+        .pet-name {
+            color: #6E0D25;
+            font-weight: 600;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover {
+            border-color: #6E0D25;
+            color: #6E0D25;
+        }
+        
+        .filter-btn.active {
+            background: #6E0D25;
+            border-color: #6E0D25;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #9ca3af;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- App Header -->
+    <div class="app-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-calendar-check me-2 app-header-icon"></i>
+                <span class="app-header-title">Le Mie Prenotazioni</span>
+            </div>
+        </div>
+        <div>
+            <a href="settings.html" class="btn header-btn">
+                <i class="bi bi-person-circle icon-md"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+        <div class="page-content">
+            <!-- Prossima Prenotazione -->
+            <h6 class="section-header mt-0">Prossima Prenotazione</h6>
+            <div id="nextBooking">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary-color" role="status">
+                        <span class="visually-hidden">Caricamento...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtri Storico -->
+            <h6 class="section-header">Storico Prenotazioni</h6>
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" data-status="all">Tutte</button>
+                <button class="filter-btn" data-status="confirmed">Confermate</button>
+                <button class="filter-btn" data-status="completed">Completate</button>
+                <button class="filter-btn" data-status="cancelled">Annullate</button>
+                <button class="filter-btn" data-status="pending">In Attesa</button>
+            </div>
+            
+            <div id="pastBookings">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary-color" role="status">
+                        <span class="visually-hidden">Caricamento...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+        </a>
+        <a href="my-pets.html" class="nav-item">
+            <img src="img/paw-icon-without-color.svg" alt="Animali" class="nav-icon">
+            <span>Animali</span>
+        </a>
+        <a href="my-bookings.html" class="nav-item active">
+            <i class="bi bi-calendar-check"></i>
+            <span>Prenotazioni</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <i class="bi bi-person"></i>
+            <span>Profilo</span>
+        </a>
+        <a href="#" class="nav-item" onclick="handleLogoutClick(); return false;">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+    <!-- Bootstrap bundle js -->
+    <script src="vender/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js_front/app.js"></script>
+    <script src="js_front/script.js"></script>
+
+    <script>
+    let allPastBookings = [];
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        if (!checkAuth()) return;
+        
+        const user = await loadUserData();
+        if (!user) return;
+        
+        await loadBookings();
+        
+        // Event listener per filtri
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Rimuovi active da tutti
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                // Aggiungi active al bottone cliccato
+                this.classList.add('active');
+                
+                currentFilter = this.dataset.status;
+                filterBookings(currentFilter);
+            });
+        });
+    });
+
+    async function loadBookings() {
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`${API_URL}/my-bookings`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Errore caricamento prenotazioni');
+            }
+            
+            const data = await response.json();
+            let bookings = data.bookings || [];
+            
+            if (bookings.length === 0) {
+                document.getElementById('nextBooking').innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x"></i>
+                        <p>Nessuna prenotazione</p>
+                    </div>
+                `;
+                allPastBookings = [];
+                filterBookings('all');
+                return;
+            }
+            
+            const now = new Date();
+            
+            // Ordina TUTTE le prenotazioni per data
+            bookings.sort((a, b) => {
+                const dateA = parseBookingDateTime(a.booking_date, a.time_slot);
+                const dateB = parseBookingDateTime(b.booking_date, b.time_slot);
+                return dateA - dateB;
+            });
+            
+            // Trova la prossima prenotazione futura con status attivo
+            const nextBooking = bookings.find(b => {
+                const bookingDateTime = parseBookingDateTime(b.booking_date, b.time_slot);
+                return bookingDateTime >= now && ['pending', 'confirmed', 'in_progress'].includes(b.status);
+            });
+            
+            if (nextBooking) {
+                displayNextBooking(nextBooking);
+                // Storico = TUTTE le prenotazioni (inclusa la prossima)
+                allPastBookings = bookings;
+            } else {
+                document.getElementById('nextBooking').innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x"></i>
+                        <p>Nessuna prenotazione futura</p>
+                    </div>
+                `;
+                // Storico = TUTTE le prenotazioni
+                allPastBookings = bookings;
+            }
+            
+            // Mostra tutte nel filtro
+            filterBookings('all');
+            
+        } catch (error) {
+            console.error('Errore:', error);
+            document.getElementById('nextBooking').innerHTML = 
+                '<p class="text-muted text-center">Errore caricamento prenotazioni</p>';
+            document.getElementById('pastBookings').innerHTML = '';
+        }
+    }
+
+    // Funzione helper per parsing corretto della data
+    function parseBookingDateTime(bookingDate, timeSlot) {
+        // Crea un oggetto Date dalla stringa ISO completa
+        const dateObj = new Date(bookingDate);
+        
+        // Estrai ora e minuti dal time_slot
+        const [hours, minutes] = timeSlot.split(':').map(Number);
+        
+        // Imposta l'ora e i minuti corretti
+        dateObj.setHours(hours, minutes, 0, 0);
+        
+        return dateObj;
+    }
+
+    function displayNextBooking(booking) {
+        const date = new Date(booking.booking_date);
+        const formattedDate = date.toLocaleDateString('it-IT', { 
+            weekday: 'long',
+            day: '2-digit', 
+            month: 'long', 
+            year: 'numeric' 
+        });
+        
+        const statusLabels = {
+            'pending': 'In Attesa',
+            'confirmed': 'Confermata',
+            'in_progress': 'In Corso'
+        };
+        
+        const statusLabel = statusLabels[booking.status] || booking.status;
+        
+        document.getElementById('nextBooking').innerHTML = `
+            <div class="next-booking-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <div class="pet-name">
+                            <i class="bi bi-heart-fill me-2"></i>${booking.pet.name}
+                        </div>
+                        <div class="service-name mt-2">
+                            ${booking.service.name}
+                        </div>
+                    </div>
+                    <span style="background: rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600;">
+                        ${statusLabel}
+                    </span>
+                </div>
+                
+                <div class="booking-time">
+                    <div class="d-flex justify-content-between mb-2">
+                        <div>
+                            <i class="bi bi-calendar3 me-2"></i>
+                            <span style="text-transform: capitalize;">${formattedDate}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-clock me-2"></i>
+                            <span style="font-size: 18px; font-weight: 700;">${booking.time_slot}</span>
+                            <span class="ms-2" style="opacity: 0.8;">(${booking.duration} min)</span>
+                        </div>
+                        <div style="font-size: 20px; font-weight: 700;">
+                            € ${booking.price}
+                        </div>
+                    </div>
+                </div>
+                
+                ${booking.notes ? `
+                    <div style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 12px; margin-top: 16px; font-size: 14px;">
+                        <i class="bi bi-chat-left-text me-2"></i>${booking.notes}
+                    </div>
+                ` : ''}
+                
+                <div class="d-flex gap-2 mt-3">
+                    ${['pending', 'confirmed'].includes(booking.status) ? `
+                        <button onclick="cancelBooking(${booking.id})" class="btn btn-light rounded-3 flex-fill">
+                            <i class="bi bi-x-circle me-2"></i>Cancella
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    function filterBookings(status) {
+        let filtered = allPastBookings;
+        
+        if (status !== 'all') {
+            filtered = allPastBookings.filter(b => b.status === status);
+        }
+        
+        displayBookings('pastBookings', filtered);
+    }
+
+    function displayBookings(containerId, bookings) {
+        const container = document.getElementById(containerId);
+        
+        if (bookings.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <p>Nessuna prenotazione trovata</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = bookings.map(booking => {
+            const date = new Date(booking.booking_date);
+            const formattedDate = date.toLocaleDateString('it-IT', { 
+                day: '2-digit', 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            
+            const statusLabels = {
+                'pending': 'In Attesa',
+                'confirmed': 'Confermata',
+                'in_progress': 'In Corso',
+                'completed': 'Completata',
+                'cancelled': 'Annullata',
+                'no_show': 'Non Presentato'
+            };
+            
+            const statusClass = booking.status;
+            const statusLabel = statusLabels[booking.status] || booking.status;
+            
+            return `
+                <div class="booking-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <div class="pet-name">
+                                <i class="bi bi-heart-fill me-1"></i>${booking.pet.name}
+                            </div>
+                            <div class="fw-semibold text-primary-color mt-1">
+                                ${booking.service.name}
+                            </div>
+                        </div>
+                        <span class="status-badge ${statusClass}">${statusLabel}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar3 me-2 text-primary-color fs-14"></i>
+                            <span class="text-muted">${formattedDate}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock me-2 text-primary-color fs-14"></i>
+                            <span class="text-muted">${booking.time_slot}</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="small text-muted">
+                            Prenotazione #${booking.id} • 
+                            <i class="bi bi-clock me-1"></i>${booking.duration} min • 
+                            <i class="bi bi-currency-euro"></i>${booking.price}
+                        </div>
+                        ${booking.notes ? `<div class="small text-muted mt-1"><i class="bi bi-chat-left-text me-1"></i>${booking.notes}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function cancelBooking(bookingId) {
+        if (!confirm('Sei sicuro di voler cancellare questa prenotazione?')) {
+            return;
+        }
+        
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`${API_URL}/bookings/${bookingId}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                showToast('Prenotazione cancellata con successo', 'success');
+                await loadBookings();
+            } else {
+                showToast(data.message || 'Errore durante la cancellazione', 'error');
+            }
+        } catch (error) {
+            console.error('Errore:', error);
+            showToast('Errore di connessione', 'error');
+        }
+    }
+</script>
+</body>
+
+</html>

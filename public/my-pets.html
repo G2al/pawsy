@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/logo-pawsy.png" type="image/png">
+    <title>Pawsy - I Miei Animali</title>
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="vender/bootstrap/css/bootstrap.min.css">
+    <!-- Custom css -->
+    <link rel="stylesheet" href="css_front/style.css">
+    <style>
+        .pet-card {
+            background: var(--surface);
+            border-radius: 9px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .pet-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .pet-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-light);
+        }
+        
+        .pet-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .pet-breed {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        
+        .pet-info-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #f3f4f6;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+        
+        .pet-info-badge i {
+            margin-right: 4px;
+            font-size: 14px;
+        }
+        
+        .sex-male {
+            color: #3b82f6;
+        }
+        
+        .sex-female {
+            color: #ec4899;
+        }
+        
+        .add-pet-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            font-size: 24px;
+            z-index: 999;
+            transition: transform 0.3s;
+        }
+        
+        .add-pet-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            display: none;
+        }
+        
+        .modal-backdrop.show {
+            display: block;
+        }
+        
+        .pet-modal {
+            position: fixed;
+            left: 50%;
+            bottom: 90px;
+            transform: translateX(-50%);
+            width: calc(100% - 30px);
+            max-width: 480px;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            z-index: 1101;
+            display: none;
+        }
+        
+        .pet-modal.show {
+            display: block;
+        }
+        
+        .pet-modal .search-card {
+            margin: 0;
+        }
+
+        .confirm-modal {
+            position: fixed;
+            left: 50%;
+            bottom: 90px;
+            transform: translateX(-50%);
+            width: calc(100% - 30px);
+            max-width: 420px;
+            z-index: 1101;
+            display: none;
+        }
+
+        .confirm-modal.show {
+            display: block;
+        }
+
+        .confirm-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            color: #9ca3af;
+        }
+        
+        .empty-state i {
+            font-size: 80px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .pet-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .btn-edit, .btn-delete {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-edit {
+            background: rgba(98, 0, 238, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .btn-edit:hover {
+            background: rgba(98, 0, 238, 0.15);
+        }
+        
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- App Header -->
+    <div class="app-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="img/paw-icon-with-color-for-header.svg" alt="Animali" class="app-header-icon me-2">
+                <span class="app-header-title">I Miei Animali</span>
+            </div>
+        </div>
+        <div>
+            <a href="settings.html" class="btn header-btn">
+                <i class="bi bi-person-circle icon-md"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+        <div class="page-content">
+            <div id="petsContainer">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary-color" role="status">
+                        <span class="visually-hidden">Caricamento...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Pet Button -->
+    <button class="add-pet-btn" onclick="openModal()">
+        <i class="bi bi-plus"></i>
+    </button>
+
+    <!-- Modal Backdrop -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeAnyModal()"></div>
+
+    <!-- Pet Modal -->
+    <div class="pet-modal" id="petModal">
+        <div class="search-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="text-primary-color mb-0 fw-semibold">
+                    <i class="bi bi-heart me-2"></i><span id="modalTitle">Aggiungi Animale</span>
+                </h6>
+                <button type="button" class="btn btn-light-2 icon-btn" onclick="closeModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            
+            <form id="petForm" onsubmit="savePet(event)">
+                <input type="hidden" id="petId" name="pet_id">
+                
+                <div class="mb-3">
+                    <label class="form-label">Nome *</label>
+                    <input type="text" class="form-control" id="petName" name="name" required placeholder="Es. Luna">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Sesso *</label>
+                    <select class="form-select" id="petSex" name="sex" required>
+                        <option value="">Seleziona</option>
+                        <option value="maschio">Maschio</option>
+                        <option value="femmina">Femmina</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Razza *</label>
+                    <input type="text" class="form-control" id="petBreed" name="breed" required placeholder="Es. Labrador">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Taglia *</label>
+                    <select class="form-select" id="petSize" name="size" required>
+                        <option value="">Seleziona</option>
+                        <option value="piccola">Piccola</option>
+                        <option value="media">Media</option>
+                        <option value="grande">Grande</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Data di Nascita *</label>
+                    <input type="date" class="form-control" id="petBirthDate" name="birth_date" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Foto</label>
+                    <input type="file" class="form-control" id="petPhoto" name="photo" accept="image/*">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Note</label>
+                    <textarea class="form-control" id="petNotes" name="notes" rows="3" placeholder="Note particolari..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-app" id="submitBtn">
+                    <i class="bi bi-check-circle me-2"></i>Salva Animale
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="confirm-modal" id="deleteModal">
+        <div class="search-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="text-primary-color mb-0 fw-semibold">
+                    <i class="bi bi-trash me-2"></i>Elimina animale
+                </h6>
+                <button type="button" class="btn btn-light-2 icon-btn" onclick="closeDeleteModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <p class="text-muted mb-3" id="deleteModalText">
+                Una volta eliminato non sarà più possibile recuperarlo.
+            </p>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-light-2 w-50" id="deleteCancelBtn" onclick="closeDeleteModal()">Annulla</button>
+                <button type="button" class="btn btn-app w-50" id="deleteConfirmBtn" onclick="confirmDeletePet()">
+                    <span id="deleteConfirmText">Elimina</span>
+                    <span id="deleteConfirmLoading" class="confirm-loading d-none">
+                        <span class="spinner-border spinner-border-sm"></span>
+                        Eliminazione...
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+        </a>
+        <a href="my-pets.html" class="nav-item active">
+            <img src="img/paw-icon-full-color.svg" alt="Animali" class="nav-icon">
+            <span>Animali</span>
+        </a>
+        <a href="my-bookings.html" class="nav-item">
+            <i class="bi bi-calendar-check"></i>
+            <span>Prenotazioni</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <i class="bi bi-person"></i>
+            <span>Profilo</span>
+        </a>
+        <a href="#" class="nav-item" onclick="handleLogoutClick(); return false;">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+    <!-- Bootstrap bundle js -->
+    <script src="vender/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js_front/app.js"></script>
+    <script src="js_front/script.js"></script>
+    
+    <script>
+        let currentPetId = null;
+        let pendingDeletePetId = null;
+        let pendingDeletePetName = '';
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!checkAuth()) return;
+            
+            const user = await loadUserData();
+            if (!user) return;
+            
+            await loadPets();
+        });
+
+        async function loadPets() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/my-pets`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Errore caricamento animali');
+                }
+                
+                const data = await response.json();
+                const pets = data.pets || [];
+                
+                displayPets(pets);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('petsContainer').innerHTML = 
+                    '<p class="text-muted text-center">Errore caricamento animali</p>';
+            }
+        }
+
+        function displayPets(pets) {
+            const container = document.getElementById('petsContainer');
+            
+            if (pets.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-heart"></i>
+                        <h3>Nessun animale</h3>
+                        <p>Aggiungi il tuo primo animale per iniziare!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = pets.map(pet => {
+                const birthDate = new Date(pet.birth_date);
+                const age = calculateAge(birthDate);
+                const sexIcon = pet.sex === 'maschio' ? 'bi-gender-male sex-male' : 'bi-gender-female sex-female';
+               const photoUrl = pet.photo_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(pet.name) + '&background=8b5cf6&color=fff&size=200';
+                
+                return `
+                    <div class="pet-card">
+                        <div class="d-flex align-items-start">
+                            <img src="${photoUrl}" alt="${pet.name}" class="pet-photo" onerror="this.src='img/default-pet.png'">
+                            <div class="flex-fill ms-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h3 class="pet-name">
+                                            ${pet.name}
+                                            <i class="bi ${sexIcon} ms-2"></i>
+                                        </h3>
+                                        <p class="pet-breed mb-2">${pet.breed}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex flex-wrap">
+                                    <span class="pet-info-badge">
+                                        <i class="bi bi-rulers"></i>
+                                        ${capitalizeFirst(pet.size)}
+                                    </span>
+                                    <span class="pet-info-badge">
+                                        <i class="bi bi-calendar-event"></i>
+                                        ${age}
+                                    </span>
+                                </div>
+                                
+                                ${pet.notes ? `
+                                    <div class="mt-2" style="font-size: 13px; color: #6b7280;">
+                                        <i class="bi bi-chat-left-text me-1"></i>${pet.notes}
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="pet-actions">
+                                    <button class="btn-edit" onclick="editPet(${pet.id})">
+                                        <i class="bi bi-pencil me-1"></i>Modifica
+                                    </button>
+                                    <button class="btn-delete" onclick="deletePet(${pet.id}, '${pet.name}')">
+                                        <i class="bi bi-trash me-1"></i>Elimina
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function calculateAge(birthDate) {
+            const today = new Date();
+            const years = today.getFullYear() - birthDate.getFullYear();
+            const months = today.getMonth() - birthDate.getMonth();
+            
+            if (years === 0) {
+                return `${months} ${months === 1 ? 'mese' : 'mesi'}`;
+            } else if (years === 1 && months < 0) {
+                return `${12 + months} mesi`;
+            } else {
+                return `${years} ${years === 1 ? 'anno' : 'anni'}`;
+            }
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function openModal(petId = null) {
+            currentPetId = petId;
+            
+            if (petId) {
+                document.getElementById('modalTitle').textContent = 'Modifica Animale';
+                loadPetData(petId);
+            } else {
+                document.getElementById('modalTitle').textContent = 'Aggiungi Animale';
+                document.getElementById('petForm').reset();
+                document.getElementById('petId').value = '';
+            }
+            
+            document.getElementById('modalBackdrop').classList.add('show');
+            document.getElementById('petModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('petModal').classList.remove('show');
+            document.getElementById('petForm').reset();
+            currentPetId = null;
+            hideBackdropIfNoModal();
+        }
+
+        function openDeleteModal(petId, petName) {
+            pendingDeletePetId = petId;
+            pendingDeletePetName = petName;
+            document.getElementById('deleteModalText').textContent =
+                `Stai per eliminare ${petName}. Una volta eliminato non sarà più possibile recuperarlo.`;
+            document.getElementById('modalBackdrop').classList.add('show');
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            pendingDeletePetId = null;
+            pendingDeletePetName = '';
+            hideBackdropIfNoModal();
+        }
+
+        function closeAnyModal() {
+            closeModal();
+            closeDeleteModal();
+        }
+
+        function hideBackdropIfNoModal() {
+            const petModalOpen = document.getElementById('petModal').classList.contains('show');
+            const deleteModalOpen = document.getElementById('deleteModal').classList.contains('show');
+            if (!petModalOpen && !deleteModalOpen) {
+                document.getElementById('modalBackdrop').classList.remove('show');
+            }
+        }
+
+        async function loadPetData(petId) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/my-pets`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                const pet = data.pets.find(p => p.id === petId);
+                
+                if (pet) {
+                    document.getElementById('petId').value = pet.id;
+                    document.getElementById('petName').value = pet.name;
+                    document.getElementById('petSex').value = pet.sex;
+                    document.getElementById('petBreed').value = pet.breed;
+                    document.getElementById('petSize').value = pet.size;
+                    document.getElementById('petBirthDate').value = pet.birth_date.substring(0, 10);
+                    document.getElementById('petNotes').value = pet.notes || '';
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                showToast('Errore caricamento dati', 'error');
+            }
+        }
+
+        async function savePet(event) {
+            event.preventDefault();
+            
+            const token = localStorage.getItem('token');
+            const petId = document.getElementById('petId').value;
+            const formData = new FormData(event.target);
+            
+            // Rimuovi pet_id dal formData
+            formData.delete('pet_id');
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Salvataggio...';
+            
+            try {
+                const url = petId ? `${API_URL}/pets/${petId}` : `${API_URL}/pets`;
+                const method = petId ? 'POST' : 'POST';
+                
+                if (petId) {
+                    formData.append('_method', 'PUT');
+                }
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast(petId ? 'Animale modificato con successo' : 'Animale aggiunto con successo', 'success');
+                    closeModal();
+                    await loadPets();
+                } else {
+                    showToast(data.message || 'Errore durante il salvataggio', 'error');
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                showToast('Errore di connessione', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Salva Animale';
+            }
+        }
+
+        function editPet(petId) {
+            openModal(petId);
+        }
+
+        function deletePet(petId, petName) {
+            openDeleteModal(petId, petName);
+        }
+
+        async function confirmDeletePet() {
+            if (!pendingDeletePetId) {
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+            const deleteCancelBtn = document.getElementById('deleteCancelBtn');
+            const deleteConfirmText = document.getElementById('deleteConfirmText');
+            const deleteConfirmLoading = document.getElementById('deleteConfirmLoading');
+            deleteConfirmBtn.disabled = true;
+            deleteCancelBtn.disabled = true;
+            deleteConfirmText.classList.add('d-none');
+            deleteConfirmLoading.classList.remove('d-none');
+            
+            try {
+                const response = await fetch(`${API_URL}/pets/${pendingDeletePetId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast('Animale eliminato con successo', 'success');
+                    closeDeleteModal();
+                    await loadPets();
+                } else {
+                    showToast(data.message || 'Errore durante l\'eliminazione', 'error');
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                showToast('Errore di connessione', 'error');
+            } finally {
+                deleteConfirmBtn.disabled = false;
+                deleteCancelBtn.disabled = false;
+                deleteConfirmText.classList.remove('d-none');
+                deleteConfirmLoading.classList.add('d-none');
+            }
+        }
+    </script>
+</body>
+
+</html>

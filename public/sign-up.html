@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/logo-pawsy.png" type="image/png">
+    <title>Pawsy - Registrazione</title>
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="vender/bootstrap/css/bootstrap.min.css">
+    <!-- Custom css -->
+    <link rel="stylesheet" href="css_front/style.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="d-flex align-items-center mb-3">
+                <div class="user-avatar me-3">
+                    <i class="bi bi-person"></i>
+                </div>
+                <div>
+                    <h6 class="mb-1">Ospite</h6>
+                    <p class="mb-0 small">Non autenticato</p>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <a href="index.html" class="sidebar-menu-item">
+                <i class="bi bi-house-door"></i>
+                <span>Home</span>
+            </a>
+            <a href="my-pets.html" class="sidebar-menu-item">
+                <i class="bi bi-heart"></i>
+                <span>I Miei Animali</span>
+            </a>
+            <a href="my-bookings.html" class="sidebar-menu-item">
+                <i class="bi bi-calendar-check"></i>
+                <span>Le Mie Prenotazioni</span>
+            </a>
+            <a href="services.html" class="sidebar-menu-item">
+                <i class="bi bi-sparkles"></i>
+                <span>Servizi</span>
+            </a>
+            <a href="profile.html" class="sidebar-menu-item">
+                <i class="bi bi-person"></i>
+                <span>Profilo</span>
+            </a>
+            <a href="notifications.html" class="sidebar-menu-item">
+                <i class="bi bi-bell"></i>
+                <span>Notifiche</span>
+            </a>
+            <a href="help-support.html" class="sidebar-menu-item">
+                <i class="bi bi-question-circle"></i>
+                <span>Aiuto & Supporto</span>
+            </a>
+            <a href="sign-in.html" class="sidebar-menu-item">
+                <i class="bi bi-box-arrow-in-right"></i>
+                <span>Accedi</span>
+            </a>
+            <a href="sign-up.html" class="sidebar-menu-item">
+                <i class="bi bi-box-arrow-in-left"></i>
+                <span>Registrati</span>
+            </a>
+        </div>
+        <div class="p-3 text-center">
+            <a href="sign-in.html" class="btn btn-outline-danger w-100 rounded-3">
+                <i class="bi bi-box-arrow-right me-2"></i> Esci
+            </a>
+        </div>
+    </div>
+    
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="sign-in.html" class="btn back-btn">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+        </div>
+        
+        <!-- Logo and Header -->
+        <div class="text-center mb-4">
+            <div class="app-logo mb-3">
+                <img src="img/logo-pawsy.png" alt="Pawsy">
+            </div>
+            <h4 class="fw-bold text-primary-color">Crea Account</h4>
+            <p class="text-muted">Registrati per iniziare</p>
+        </div>
+        
+        <!-- Sign Up Form -->
+        <div class="auth-form">
+            <form id="signUpForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nome</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-person text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Inserisci il tuo nome" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="surname" class="form-label">Cognome</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-person text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" id="surname" name="surname" placeholder="Inserisci il tuo cognome" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-envelope text-muted"></i>
+                        </span>
+                        <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="Inserisci la tua email" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Telefono</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-telephone text-muted"></i>
+                        </span>
+                        <input type="tel" class="form-control border-start-0" id="phone" name="phone" placeholder="Inserisci il tuo numero di telefono" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-lock text-muted"></i>
+                        </span>
+                        <input type="password" class="form-control border-start-0 border-end-0" id="password" name="password" placeholder="Crea una password" required>
+                        <button type="button" class="input-group-text bg-transparent border-start-0 toggle-password" data-target="#password" aria-label="Mostra password">
+                            <i class="bi bi-eye text-muted"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength mt-2">
+                        <div class="d-flex gap-2 mb-1">
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                            <div class="strength-bar"></div>
+                        </div>
+                        <small class="text-muted" id="passwordStrengthText">Forza password: Debole</small>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password_confirmation" class="form-label">Conferma Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0">
+                            <i class="bi bi-lock text-muted"></i>
+                        </span>
+                        <input type="password" class="form-control border-start-0" id="password_confirmation" name="password_confirmation" placeholder="Conferma la password" required>
+                    </div>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="termsAgree" required>
+                    <label class="form-check-label" for="termsAgree">
+                        Accetto i <a href="#" class="text-primary-color text-decoration-none">Termini di Servizio</a> e la <a href="#" class="text-primary-color text-decoration-none">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <div class="d-grid gap-2 mb-4">
+                    <button type="submit" class="btn btn-app">Crea Account</button>
+                </div>
+            </form>
+
+            <!-- Sign In Link -->
+            <div class="text-center">
+                <p class="mb-0">Hai già un account? <a href="sign-in.html" class="text-primary-color text-decoration-none">Accedi</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap bundle js -->
+    <script src="vender/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Script js -->
+    <script src="js_front/script.js"></script>
+    <script src="js_front/auth.js"></script>
+</body>
+
+</html>

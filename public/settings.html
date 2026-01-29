@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/logo-pawsy.png" type="image/png">
+    <title>BusGo - Bus Booking HTML Mobile App Template</title>
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="vender/bootstrap/css/bootstrap.min.css">
+    <!-- Custom css -->
+    <link rel="stylesheet" href="css_front/style.css">
+
+    <style>
+        .profile-card {
+            background: var(--surface);
+            border-radius: 9px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .profile-name {
+            font-weight: 600;
+            margin: 0;
+        }
+        .profile-email {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .settings-accordion {
+            background: var(--surface);
+            border-radius: 9px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .settings-accordion summary {
+            list-style: none;
+            cursor: pointer;
+        }
+        .settings-accordion summary::-webkit-details-marker {
+            display: none;
+        }
+        .settings-accordion-header {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .settings-accordion-content {
+            padding: 0 16px 16px 16px;
+        }
+        .confirm-modal {
+            position: fixed;
+            left: 50%;
+            bottom: 90px;
+            transform: translateX(-50%);
+            width: calc(100% - 30px);
+            max-width: 420px;
+            z-index: 1101;
+            display: none;
+        }
+        .confirm-modal.show {
+            display: block;
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            display: none;
+        }
+        .modal-backdrop.show {
+            display: block;
+        }
+    </style>
+</head>
+
+
+<body>
+    <!-- App Header -->
+    <div class="app-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-person-circle me-2 app-header-icon"></i>
+                <span class="app-header-title">Profilo</span>
+            </div>
+        </div>
+        <div>
+            <a href="#" class="btn header-btn" onclick="handleLogoutClick(); return false;" aria-label="Logout">
+                <i class="bi bi-box-arrow-right icon-md"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+        <div class="page-content">
+            <div class="profile-card mb-3">
+                <div class="user-avatar">
+                    <i class="bi bi-person"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <p class="profile-name" id="profileName">--</p>
+                    <p class="profile-email" id="profileEmail">--</p>
+                </div>
+            </div>
+
+            <h6 class="section-header mt-0">Account</h6>
+
+            <details class="settings-accordion" id="personalAccordion" open>
+                <summary class="settings-accordion-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="settings-item-icon primary">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div>
+                            <div class="settings-item-title">Informazioni personali</div>
+                            <div class="settings-item-description">Aggiorna nome, cognome ed email</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-chevron-down text-muted"></i>
+                </summary>
+                <div class="settings-accordion-content">
+                    <form id="profileForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="profileNameInput" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cognome</label>
+                            <input type="text" class="form-control" id="profileSurnameInput" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="profileEmailInput" required>
+                        </div>
+                        <button type="submit" class="btn btn-app">Salva</button>
+                    </form>
+                </div>
+            </details>
+
+            <details class="settings-accordion" id="securityAccordion">
+                <summary class="settings-accordion-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="settings-item-icon secondary">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <div>
+                            <div class="settings-item-title">Sicurezza</div>
+                            <div class="settings-item-description">Cambia password</div>
+                        </div>
+                    </div>
+                    <i class="bi bi-chevron-down text-muted"></i>
+                </summary>
+                <div class="settings-accordion-content">
+                    <form id="passwordForm">
+                        <div class="mb-3">
+                            <label class="form-label">Password attuale</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nuova password</label>
+                            <input type="password" class="form-control" id="newPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Conferma nuova password</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-app">Aggiorna password</button>
+                    </form>
+                    <div class="mt-2">
+                        <a href="forgot-password.html" class="small text-primary-color text-decoration-none">Password dimenticata?</a>
+                    </div>
+                </div>
+            </details>
+
+            <div class="mt-4">
+                <button class="btn btn-app w-100 rounded-3" onclick="handleLogoutClick(this)">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="confirm-modal" id="confirmModal">
+        <div class="search-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="text-primary-color mb-0 fw-semibold">
+                    <i class="bi bi-shield-lock me-2"></i>Conferma cambio password
+                </h6>
+                <button type="button" class="btn btn-light-2 icon-btn" id="confirmCloseBtn">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <p class="text-muted mb-3">
+                Stai per cambiare la tua password. Dopo la modifica dovrai effettuare di nuovo il login.
+            </p>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-light-2 w-50" id="confirmCancelBtn">Annulla</button>
+                <button type="button" class="btn btn-app w-50" id="confirmOkBtn">Conferma</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+        </a>
+        <a href="my-pets.html" class="nav-item">
+            <img src="img/paw-icon-without-color.svg" alt="Animali" class="nav-icon">
+            <span>Animali</span>
+        </a>
+        <a href="my-bookings.html" class="nav-item">
+            <i class="bi bi-calendar-check"></i>
+            <span>Prenotazioni</span>
+        </a>
+        <a href="settings.html" class="nav-item active">
+            <i class="bi bi-person"></i>
+            <span>Profilo</span>
+        </a>
+        <a href="#" class="nav-item" onclick="handleLogoutClick(); return false;">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+    <script src="vender/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js_front/app.js"></script>
+    <script src="js_front/script.js"></script>
+    <script>
+        let pendingPasswordPayload = null;
+
+        function showConfirmModal() {
+            document.getElementById('modalBackdrop').classList.add('show');
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        function hideConfirmModal() {
+            document.getElementById('modalBackdrop').classList.remove('show');
+            document.getElementById('confirmModal').classList.remove('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!checkAuth()) return;
+
+            const user = await loadUserData();
+            if (!user) return;
+
+            document.getElementById('profileName').textContent = `${user.name} ${user.surname}`;
+            document.getElementById('profileEmail').textContent = user.email;
+
+            document.getElementById('profileNameInput').value = user.name || '';
+            document.getElementById('profileSurnameInput').value = user.surname || '';
+            document.getElementById('profileEmailInput').value = user.email || '';
+
+            document.getElementById('profileForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const token = localStorage.getItem('token');
+
+                const payload = {
+                    name: document.getElementById('profileNameInput').value.trim(),
+                    surname: document.getElementById('profileSurnameInput').value.trim(),
+                    email: document.getElementById('profileEmailInput').value.trim(),
+                };
+
+                const response = await fetch(`${API_URL}/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    document.getElementById('profileName').textContent = `${data.user.name} ${data.user.surname}`;
+                    document.getElementById('profileEmail').textContent = data.user.email;
+                    showToast('Profilo aggiornato con successo', 'success');
+                } else {
+                    showToast(data.message || 'Errore durante il salvataggio', 'error');
+                }
+            });
+
+            document.getElementById('passwordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const currentPassword = document.getElementById('currentPassword').value.trim();
+                const newPassword = document.getElementById('newPassword').value.trim();
+                const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+                if (newPassword.length < 8) {
+                    showToast('La nuova password deve avere almeno 8 caratteri', 'warning');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    showToast('Le password non coincidono', 'warning');
+                    return;
+                }
+
+                pendingPasswordPayload = {
+                    current_password: currentPassword,
+                    password: newPassword,
+                    password_confirmation: confirmPassword,
+                };
+
+                showConfirmModal();
+            });
+
+            document.getElementById('confirmCancelBtn').addEventListener('click', hideConfirmModal);
+            document.getElementById('confirmCloseBtn').addEventListener('click', hideConfirmModal);
+            document.getElementById('modalBackdrop').addEventListener('click', hideConfirmModal);
+
+            document.getElementById('confirmOkBtn').addEventListener('click', async function() {
+                if (!pendingPasswordPayload) return;
+
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(`${API_URL}/password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(pendingPasswordPayload)
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    showToast('Password aggiornata. Effettua di nuovo il login.', 'success');
+                    hideConfirmModal();
+                    setTimeout(() => logout(), 1200);
+                } else {
+                    showToast(data.message || 'Errore durante il cambio password', 'error');
+                }
+            });
+        });
+    </script>
+</body>
+</body>
+
+</html>

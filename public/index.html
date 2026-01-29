@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/logo-pawsy.png" type="image/png">
+    <title>Pawsy - Dashboard</title>
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="vender/bootstrap/css/bootstrap.min.css">
+    <!-- Custom css -->
+    <link rel="stylesheet" href="css_front/style.css">
+    <style>
+        .service-image-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .service-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .service-info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #7b2e3c;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .service-info-box.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- App Header -->
+    <div class="app-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="img/logo-pawsy.png" alt="Pawsy" class="app-header-icon me-2">
+                <span class="app-header-title">Pawsy</span>
+            </div>
+        </div>
+        <div>
+            <a href="settings.html" class="btn header-btn">
+                <i class="bi bi-person-circle icon-md"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+        <!-- Booking Form -->
+        <div class="search-card">
+            <h6 class="text-primary-color mb-3 fw-semibold">
+                <i class="bi bi-calendar-check me-2"></i>Prenota un Servizio
+            </h6>
+            <form id="bookingForm">
+                <div class="mb-3">
+                    <label for="pet" class="form-label">
+                        <img src="img/paw-icon-with-color-for-input.svg" alt="Animali" class="form-label-icon me-1">Seleziona Animale
+                    </label>
+                    <select class="form-select" id="pet" required>
+                        <option value="" selected>Caricamento animali...</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="service" class="form-label">
+                        <i class="bi bi-scissors me-1 text-primary-color"></i>Servizio
+                    </label>
+                    <select class="form-select" id="service" required>
+                        <option value="" selected>Seleziona un servizio</option>
+                    </select>
+                </div>
+
+                <!-- Info servizio selezionato -->
+                <div id="serviceInfo" class="service-info-box">
+                    <div class="mb-2 text-primary-color fw-semibold">
+                        <i class="bi bi-sparkles me-1"></i>Dettagli Servizio
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong>Durata:</strong> <span id="serviceDuration"></span> minuti
+                        </div>
+                        <div>
+                            <strong>Prezzo:</strong> € <span id="servicePrice"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="bookingDate" class="form-label">
+                        <i class="bi bi-calendar3 me-1 text-accent-color"></i>Data Prenotazione
+                    </label>
+                    <input type="date" class="form-control" id="bookingDate" required disabled>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="timeSlot" class="form-label">
+                        <i class="bi bi-clock me-1 text-primary-color"></i>Orario
+                    </label>
+                    <select class="form-select" id="timeSlot" required disabled>
+                        <option value="" selected>Prima seleziona servizio e data</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="notes" class="form-label">
+                        <i class="bi bi-pencil me-1 text-muted"></i>Note (opzionale)
+                    </label>
+                    <textarea class="form-control" id="notes" rows="2" placeholder="Eventuali richieste particolari..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn-app pulse-animation p-2 fw-bold btn w-100" id="submitBtn">
+                    <i class="bi bi-check-circle me-2"></i>Prenota Ora
+                </button>
+            </form>
+        </div>
+
+        <!-- I Nostri Servizi -->
+        <h6 class="section-header">I Nostri Servizi</h6>
+        <div id="servicesContainer">
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary-color" role="status">
+                    <span class="visually-hidden">Caricamento...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+        </a>
+        <a href="my-pets.html" class="nav-item">
+            <img src="img/paw-icon-without-color.svg" alt="Animali" class="nav-icon">
+            <span>Animali</span>
+        </a>
+        <a href="my-bookings.html" class="nav-item">
+            <i class="bi bi-calendar-check"></i>
+            <span>Prenotazioni</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <i class="bi bi-person"></i>
+            <span>Profilo</span>
+        </a>
+        <a href="#" class="nav-item" onclick="handleLogoutClick(); return false;">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+    <!-- Bootstrap bundle js -->
+    <script src="vender/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- App js -->
+    <script src="js_front/app.js"></script>
+    <script src="js_front/script.js"></script>
+    
+    <script>
+        let allServices = [];
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!checkAuth()) return;
+            
+            const user = await loadUserData();
+            if (!user) return;
+            
+            // Carica servizi
+            allServices = await loadServices();
+            displayServices(allServices);
+            
+            // Carica pets
+            const pets = await loadMyPets();
+            const petSelect = document.getElementById('pet');
+            const hasPets = pets.length > 0;
+            
+            if (!hasPets) {
+                petSelect.innerHTML = '<option value="">Nessun animale registrato</option>';
+                petSelect.disabled = true;
+                showToast('Devi prima registrare un animale!', 'warning');
+            } else {
+                petSelect.innerHTML = '<option value="" selected>Seleziona un animale</option>';
+                pets.forEach(pet => {
+                    const option = document.createElement('option');
+                    option.value = pet.id;
+                    option.textContent = `${pet.name} - ${pet.breed}`;
+                    petSelect.appendChild(option);
+                });
+                petSelect.disabled = false;
+            }
+            
+            // Popola select servizi
+            const serviceSelect = document.getElementById('service');
+            serviceSelect.innerHTML = hasPets
+                ? '<option value="" selected>Seleziona un servizio</option>'
+                : '<option value="" selected>Seleziona un animale per continuare</option>';
+            allServices.forEach(service => {
+                const option = document.createElement('option');
+                option.value = service.id;
+                option.dataset.duration = service.duration;
+                option.dataset.price = service.price;
+                option.textContent = service.name;
+                serviceSelect.appendChild(option);
+            });
+            
+            const bookingForm = document.getElementById('bookingForm');
+            const bookingDateInput = document.getElementById('bookingDate');
+            const timeSlotSelect = document.getElementById('timeSlot');
+            const serviceInfo = document.getElementById('serviceInfo');
+            const notesInput = document.getElementById('notes');
+            const submitBtn = document.getElementById('submitBtn');
+
+            function setServicePlaceholder(text) {
+                const firstOption = serviceSelect.querySelector('option[value=""]');
+                if (firstOption) {
+                    firstOption.textContent = text;
+                }
+            }
+
+            function lockBookingFields(message) {
+                serviceSelect.disabled = true;
+                bookingDateInput.disabled = true;
+                timeSlotSelect.disabled = true;
+                notesInput.disabled = true;
+                submitBtn.disabled = true;
+                serviceInfo.classList.remove('active');
+                serviceSelect.value = '';
+                bookingDateInput.value = '';
+                timeSlotSelect.innerHTML = `<option value="">${message}</option>`;
+            }
+
+            function unlockBookingFields() {
+                serviceSelect.disabled = false;
+                notesInput.disabled = false;
+                submitBtn.disabled = false;
+                bookingDateInput.disabled = true;
+                bookingDateInput.value = '';
+                timeSlotSelect.disabled = true;
+                timeSlotSelect.innerHTML = '<option value="">Prima seleziona servizio e data</option>';
+            }
+
+            if (!hasPets) {
+                lockBookingFields('Prima aggiungi un animale');
+            } else {
+                lockBookingFields('Prima seleziona un animale');
+            }
+
+            petSelect.addEventListener('change', function() {
+                if (!this.value) {
+                    setServicePlaceholder('Seleziona un animale per continuare');
+                    lockBookingFields('Prima seleziona un animale');
+                    return;
+                }
+
+                setServicePlaceholder('Seleziona un servizio');
+                unlockBookingFields();
+            });
+            
+            // Imposta data minima (oggi)
+            const today = new Date().toISOString().split('T')[0];
+            bookingDateInput.min = today;
+            
+            // Quando cambia il servizio
+            serviceSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                
+                if (this.value) {
+                    const duration = selectedOption.dataset.duration;
+                    const price = selectedOption.dataset.price;
+                    
+                    document.getElementById('serviceDuration').textContent = duration;
+                    document.getElementById('servicePrice').textContent = price;
+                    serviceInfo.classList.add('active');
+                    
+                    bookingDateInput.disabled = false;
+                    bookingDateInput.value = '';
+                    timeSlotSelect.innerHTML = '<option value="">Prima seleziona una data</option>';
+                    timeSlotSelect.disabled = true;
+                } else {
+                    serviceInfo.classList.remove('active');
+                    bookingDateInput.disabled = true;
+                    bookingDateInput.value = '';
+                    timeSlotSelect.disabled = true;
+                    timeSlotSelect.innerHTML = '<option value="">Prima seleziona servizio e data</option>';
+                }
+            });
+            
+            // Quando cambia la data
+            bookingDateInput.addEventListener('change', async function() {
+                const serviceId = serviceSelect.value;
+                const date = this.value;
+                
+                if (!serviceId || !date) return;
+                
+                timeSlotSelect.innerHTML = '<option value="">Caricamento slot...</option>';
+                timeSlotSelect.disabled = true;
+                
+                const result = await loadAvailableSlots(serviceId, date);
+                
+                if (!result.success) {
+                    timeSlotSelect.innerHTML = `<option value="">${result.message}</option>`;
+                    showToast(result.message, 'warning');
+                    return;
+                }
+                
+                if (result.slots.length === 0) {
+                    timeSlotSelect.innerHTML = '<option value="">Nessuno slot disponibile</option>';
+                    showToast('Nessuno slot disponibile per questa data', 'warning');
+                    return;
+                }
+                
+                timeSlotSelect.innerHTML = '<option value="">Seleziona orario</option>';
+                result.slots.forEach(slot => {
+                    const option = document.createElement('option');
+                    option.value = slot;
+                    option.textContent = slot;
+                    timeSlotSelect.appendChild(option);
+                });
+                
+                timeSlotSelect.disabled = false;
+            });
+            
+            // Submit prenotazione
+            bookingForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Prenotazione in corso...';
+                
+                const bookingData = {
+                    pet_id: document.getElementById('pet').value,
+                    service_id: document.getElementById('service').value,
+                    booking_date: document.getElementById('bookingDate').value,
+                    time_slot: document.getElementById('timeSlot').value,
+                    notes: document.getElementById('notes').value || null
+                };
+                
+                const result = await createBooking(bookingData);
+                
+                if (result.success) {
+                    showToast('Prenotazione creata con successo!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'my-bookings.html';
+                    }, 1500);
+                } else {
+                    showToast(result.data.message || 'Errore durante la prenotazione', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
