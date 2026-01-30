@@ -260,6 +260,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// PWA launch overlay
+document.addEventListener('DOMContentLoaded', function() {
+    const pwaOverlay = document.getElementById('pwaLaunchOverlay');
+    if (!pwaOverlay) return;
+    pwaOverlay.classList.add('hide');
+    setTimeout(() => pwaOverlay.remove(), 250);
+});
+
 // Service worker registration (PWA)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

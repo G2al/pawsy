@@ -306,6 +306,29 @@ img.app-header-icon {
     100% { transform: translateY(0) scale(0.98); opacity: 0.7; }
 }
 
+.pwa-launch-overlay {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.pwa-launch-overlay.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (display-mode: standalone) {
+    .pwa-launch-overlay {
+        display: flex;
+    }
+}
+
 /* User profile */
 
 .user-avatar {
