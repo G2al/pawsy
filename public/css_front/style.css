@@ -82,7 +82,7 @@ body {
 @media (display-mode: standalone) {
     body {
         padding-top: 0;
-        padding-bottom: calc(66px + env(safe-area-inset-bottom));
+        padding-bottom: 0;
     }
 }
 
@@ -641,6 +641,13 @@ img.app-header-icon {
 @media (display-mode: standalone) {
     .page-content {
         padding-top: 12px;
+        padding-bottom: calc(90px + env(safe-area-inset-bottom));
+    }
+}
+
+@media (display-mode: standalone) {
+    .content-area {
+        min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     }
 }
 
