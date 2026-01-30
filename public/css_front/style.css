@@ -82,7 +82,7 @@ body {
 @media (display-mode: standalone) {
     body {
         padding-top: 0;
-        padding-bottom: calc(70px + env(safe-area-inset-bottom));
+        padding-bottom: calc(66px + env(safe-area-inset-bottom));
     }
 }
 
@@ -150,8 +150,8 @@ a {
 
 @media (display-mode: standalone) {
     .app-header {
-        padding-top: calc(10px + env(safe-area-inset-top));
-        padding-bottom: 12px;
+        padding-top: calc(6px + env(safe-area-inset-top));
+        padding-bottom: 10px;
     }
 }
 
@@ -455,7 +455,7 @@ img.app-header-icon {
 
 @media (display-mode: standalone) {
     .bottom-nav {
-        padding-bottom: calc(6px + env(safe-area-inset-bottom));
+        padding-bottom: env(safe-area-inset-bottom);
     }
 }
 
@@ -640,7 +640,7 @@ img.app-header-icon {
 
 @media (display-mode: standalone) {
     .page-content {
-        padding-top: 10px;
+        padding-top: 12px;
     }
 }
 
