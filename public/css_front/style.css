@@ -1396,6 +1396,112 @@ img.app-header-icon {
     }
 }
 
+/* Web-only install guide */
+.install-guide {
+    margin-top: 18px;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.install-guide-title {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+.browser-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.browser-tab {
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    color: #6b7280;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.browser-tab.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.browser-icon-img {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    object-fit: contain;
+}
+
+.guide-steps {
+    display: none;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.guide-steps.active {
+    display: block;
+}
+
+.guide-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+}
+
+.guide-step i {
+    color: var(--primary-color);
+    font-size: 16px;
+}
+
+.install-faq {
+    margin-top: 14px;
+}
+
+.install-faq details {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+}
+
+.install-faq summary {
+    list-style: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.install-faq summary::-webkit-details-marker {
+    display: none;
+}
+
+.install-faq p {
+    margin: 8px 0 0 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+@media (display-mode: standalone) {
+    .install-guide {
+        display: none;
+    }
+}
+
 .app-logo {
     width: 80px;
     height: 80px;

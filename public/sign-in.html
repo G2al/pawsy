@@ -135,6 +135,66 @@
                 <p class="mb-0">Non hai un account? <a href="sign-up.html" class="text-primary-color text-decoration-none">Registrati</a></p>
             </div>
         </div>
+
+        <!-- Install Guide (Web only) -->
+        <div class="install-guide" id="installGuide">
+            <div class="install-guide-title">Come installare la nostra App !</div>
+            <div class="text-muted small mb-2">Con quale browser hai cercato il dominio koreancup.it?</div>
+
+            <div class="browser-tabs" id="browserTabs">
+                <button type="button" class="browser-tab active" data-guide="chrome">
+                    <img src="img/chrome.svg" alt="Chrome" class="browser-icon-img">Chrome
+                </button>
+                <button type="button" class="browser-tab" data-guide="edge">
+                    <img src="img/edge.svg" alt="Edge" class="browser-icon-img">Edge
+                </button>
+                <button type="button" class="browser-tab" data-guide="safari">
+                    <img src="img/safari.svg" alt="Safari" class="browser-icon-img">Safari
+                </button>
+            </div>
+
+            <div class="guide-steps active" id="guide-chrome">
+                <div class="guide-step"><i class="bi bi-box-arrow-up"></i> Tocca Condividi (in alto a destra)</div>
+                <div class="guide-step"><i class="bi bi-plus-square"></i> Seleziona “Aggiungi alla schermata Home”</div>
+                <div class="guide-step"><i class="bi bi-check-circle"></i> Tocca “Aggiungi”</div>
+            </div>
+
+            <div class="guide-steps" id="guide-edge">
+                <div class="guide-step"><i class="bi bi-list"></i> Tocca il menu (☰)</div>
+                <div class="guide-step"><i class="bi bi-box-arrow-up"></i> Seleziona “Condividi”</div>
+                <div class="guide-step"><i class="bi bi-plus-square"></i> “Aggiungi alla schermata Home”</div>
+                <div class="guide-step"><i class="bi bi-check-circle"></i> Tocca “Aggiungi”</div>
+            </div>
+
+            <div class="guide-steps" id="guide-safari">
+                <div class="guide-step"><i class="bi bi-box-arrow-up"></i> Tocca Condividi (in basso)</div>
+                <div class="guide-step"><i class="bi bi-plus-square"></i> “Aggiungi alla schermata Home”</div>
+                <div class="guide-step"><i class="bi bi-check-circle"></i> Tocca “Aggiungi”</div>
+            </div>
+
+            <div class="install-faq">
+                <details>
+                    <summary>Cos’è un browser? (spiegazione super semplice)</summary>
+                    <p>È l’app che usi per cercare un sito su internet. Per esempio Safari, Chrome/Google o Edge. Hai scritto il dominio nel browser (es: koreancup.it) e lui ti ha mostrato questa pagina.</p>
+                </details>
+                <details>
+                    <summary>Perché installare da qui e non dallo store?</summary>
+                    <p>Questa è una PWA: si installa dal browser e occupa pochissimo spazio. È sempre aggiornata perché prende tutto online e non devi fare download ogni volta.</p>
+                </details>
+                <details>
+                    <summary>La PWA è un’app vera?</summary>
+                    <p>Sì. Una volta aggiunta alla schermata Home si apre come un’app normale, ed è più veloce.</p>
+                </details>
+                <details>
+                    <summary>Serve spazio sul telefono?</summary>
+                    <p>Molto meno di un’app classica. La PWA salva solo l’essenziale e il resto si carica quando serve.</p>
+                </details>
+                <details>
+                    <summary>Devo aggiornare manualmente?</summary>
+                    <p>No. Le novità sono live: ogni volta che apri, hai già l’ultima versione.</p>
+                </details>
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap bundle js -->
@@ -142,6 +202,21 @@
     <!-- Script js -->
     <script src="js_front/script.js"></script>
     <script src="js_front/auth.js"></script>
+    <script>
+        (function () {
+            const tabs = document.querySelectorAll('.browser-tab');
+            const guides = document.querySelectorAll('.guide-steps');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    guides.forEach(g => g.classList.remove('active'));
+                    tab.classList.add('active');
+                    const target = document.getElementById(`guide-${tab.dataset.guide}`);
+                    if (target) target.classList.add('active');
+                });
+            });
+        })();
+    </script>
 </body>
 
 </html>
