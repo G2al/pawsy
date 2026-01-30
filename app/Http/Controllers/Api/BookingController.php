@@ -9,6 +9,7 @@ use App\Models\Exception;
 use App\Models\Pet;
 use App\Models\Service;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -251,6 +252,8 @@ class BookingController extends Controller
         // Ricarica con relazioni
         $booking->load(['pet', 'service', 'user']);
 
+        $this->sendTelegramNotification($booking);
+
         return response()->json([
             'success' => true,
             'message' => 'Prenotazione creata con successo!',
@@ -293,6 +296,36 @@ class BookingController extends Controller
         }
 
         return strlen($value) === 5 ? $value . ':00' : $value;
+    }
+
+    private function sendTelegramNotification(Booking $booking): void
+    {
+        $token = config('services.telegram.bot_token');
+        $chatId = config('services.telegram.chat_id');
+
+        if (empty($token) || empty($chatId)) {
+            return;
+        }
+
+        $date = Carbon::parse($booking->booking_date)->format('d/m/Y');
+        $time = Carbon::parse($booking->time_slot)->format('H:i');
+        $message = "🐾 Nuova prenotazione\n"
+            . "Cliente: {$booking->user->name} {$booking->user->surname}\n"
+            . "Email: {$booking->user->email}\n"
+            . "Animale: {$booking->pet->name}\n"
+            . "Servizio: {$booking->service->name}\n"
+            . "Data: {$date} {$time}\n"
+            . "Durata: {$booking->duration} min\n"
+            . "Prezzo: € {$booking->price}";
+
+        try {
+            Http::timeout(5)->post("https://api.telegram.org/bot{$token}/sendMessage", [
+                'chat_id' => $chatId,
+                'text' => $message,
+            ]);
+        } catch (\Throwable $e) {
+            // Fail silently to not block booking creation
+        }
     }
 
     /**
