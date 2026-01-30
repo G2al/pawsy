@@ -90,6 +90,12 @@
             z-index: 999;
             transition: transform 0.3s;
         }
+
+        @media (display-mode: standalone) {
+            .add-pet-btn {
+                bottom: calc(80px + env(safe-area-inset-bottom));
+            }
+        }
         
         .add-pet-btn:hover {
             transform: scale(1.1);
