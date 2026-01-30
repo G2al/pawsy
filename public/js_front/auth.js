@@ -70,6 +70,11 @@ function showToast(message, type = 'success') {
         animation: slideIn 0.3s ease-out;
     `;
 
+    // PWA safe-area adjustment (iOS)
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+        toast.style.top = 'calc(20px + env(safe-area-inset-top))';
+    }
+
     toast.innerHTML = `
         <div style="display: flex; align-items: center; gap: 12px;">
             <div style="
