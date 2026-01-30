@@ -449,7 +449,10 @@
                 
                 <div class="d-flex gap-2 mt-3">
                     ${['pending', 'confirmed'].includes(booking.status) ? `
-                        <button onclick="openCancelModal(${booking.id}, ${JSON.stringify(booking.pet.name)}, ${JSON.stringify(booking.service.name)})" class="btn btn-light rounded-3 flex-fill">
+                        <button class="btn btn-light rounded-3 flex-fill cancel-booking-btn"
+                            data-booking-id="${booking.id}"
+                            data-pet-name="${String(booking.pet.name).replace(/\"/g, '&quot;')}"
+                            data-service-name="${String(booking.service.name).replace(/\"/g, '&quot;')}">
                             <i class="bi bi-x-circle me-2"></i>Cancella
                         </button>
                     ` : ''}
@@ -540,6 +543,15 @@
     }
 
     let pendingCancelBookingId = null;
+
+    document.addEventListener('click', function(event) {
+        const btn = event.target.closest('.cancel-booking-btn');
+        if (!btn) return;
+        const bookingId = parseInt(btn.dataset.bookingId, 10);
+        const petName = btn.dataset.petName || '';
+        const serviceName = btn.dataset.serviceName || '';
+        openCancelModal(bookingId, petName, serviceName);
+    });
 
     function openCancelModal(bookingId, petName, serviceName) {
         pendingCancelBookingId = bookingId;
