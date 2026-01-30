@@ -244,7 +244,7 @@ class BookingController extends Controller
             'time_slot' => $timeSlot->format('H:i:s'),
             'duration' => $service->duration,
             'price' => $service->price,
-            'status' => 'pending',
+            'status' => 'confirmed',
             'payment_status' => 'unpaid',
             'notes' => $request->notes,
         ]);
@@ -256,7 +256,7 @@ class BookingController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Prenotazione creata con successo!',
+            'message' => 'Prenotazione confermata con successo!',
             'booking' => $booking
         ], 201);
     }
@@ -325,7 +325,7 @@ class BookingController extends Controller
             . "• {$date} — {$time}\n"
             . ($booking->notes ? "\n📝 <b>Note</b>\n• {$this->escapeTelegramHtml($booking->notes)}\n" : "")
             . "━━━━━━━━━━━━━━\n"
-            . "✅ Stato: <b>In attesa</b>";
+            . "✅ Stato: <b>Confermata</b>";
 
         try {
             Http::timeout(5)->post("https://api.telegram.org/bot{$token}/sendMessage", [
