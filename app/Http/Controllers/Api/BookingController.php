@@ -309,23 +309,39 @@ class BookingController extends Controller
 
         $date = Carbon::parse($booking->booking_date)->format('d/m/Y');
         $time = Carbon::parse($booking->time_slot)->format('H:i');
-        $message = "🐾 Nuova prenotazione\n"
-            . "Cliente: {$booking->user->name} {$booking->user->surname}\n"
-            . "Email: {$booking->user->email}\n"
-            . "Animale: {$booking->pet->name}\n"
-            . "Servizio: {$booking->service->name}\n"
-            . "Data: {$date} {$time}\n"
-            . "Durata: {$booking->duration} min\n"
-            . "Prezzo: € {$booking->price}";
+        $customerName = trim($booking->user->name . ' ' . $booking->user->surname);
+        $message = "🐾 <b>Nuova prenotazione</b>\n"
+            . "━━━━━━━━━━━━━━\n"
+            . "👤 <b>Cliente</b>\n"
+            . "• {$this->escapeTelegramHtml($customerName)}\n"
+            . "• {$this->escapeTelegramHtml($booking->user->email)}\n\n"
+            . "🐶 <b>Animale</b>\n"
+            . "• {$this->escapeTelegramHtml($booking->pet->name)}\n\n"
+            . "✂️ <b>Servizio</b>\n"
+            . "• {$this->escapeTelegramHtml($booking->service->name)}\n"
+            . "• Durata: {$booking->duration} min\n"
+            . "• Prezzo: € {$booking->price}\n\n"
+            . "📅 <b>Quando</b>\n"
+            . "• {$date} — {$time}\n"
+            . ($booking->notes ? "\n📝 <b>Note</b>\n• {$this->escapeTelegramHtml($booking->notes)}\n" : "")
+            . "━━━━━━━━━━━━━━\n"
+            . "✅ Stato: <b>In attesa</b>";
 
         try {
             Http::timeout(5)->post("https://api.telegram.org/bot{$token}/sendMessage", [
                 'chat_id' => $chatId,
                 'text' => $message,
+                'parse_mode' => 'HTML',
+                'disable_web_page_preview' => true,
             ]);
         } catch (\Throwable $e) {
             // Fail silently to not block booking creation
         }
+    }
+
+    private function escapeTelegramHtml(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     /**
