@@ -75,6 +75,8 @@ body {
     padding-bottom: 70px;
     /* Space for bottom nav */
     color: var(--text-primary);
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
 }
 
 a {

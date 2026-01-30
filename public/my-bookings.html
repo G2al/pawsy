@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
     <link rel="icon" href="img/logo-pawsy.png" type="image/png">
     <link rel="manifest" href="manifest.webmanifest">
     <meta name="theme-color" content="#6E0D25">
@@ -133,6 +133,42 @@
             margin-bottom: 16px;
             opacity: 0.3;
         }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            display: none;
+        }
+
+        .modal-backdrop.show {
+            display: block;
+        }
+
+        .confirm-modal {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 30px);
+            max-width: 420px;
+            z-index: 1101;
+            display: none;
+        }
+
+        .confirm-modal.show {
+            display: block;
+        }
+
+        .confirm-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 
@@ -181,6 +217,34 @@
                         <span class="visually-hidden">Caricamento...</span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Booking Modal -->
+    <div class="modal-backdrop" id="bookingModalBackdrop" onclick="closeCancelModal()"></div>
+    <div class="confirm-modal" id="cancelModal">
+        <div class="search-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="text-primary-color mb-0 fw-semibold">
+                    <i class="bi bi-x-circle me-2"></i>Cancella prenotazione
+                </h6>
+                <button type="button" class="btn btn-light-2 icon-btn" onclick="closeCancelModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <p class="text-muted mb-3" id="cancelModalText">
+                Stai per cancellare questa prenotazione. Una volta cancellata non sarà più recuperabile.
+            </p>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-light-2 w-50" onclick="closeCancelModal()">Annulla</button>
+                <button type="button" class="btn btn-app w-50" id="cancelConfirmBtn" onclick="confirmCancelBooking()">
+                    <span id="cancelConfirmText">Cancella</span>
+                    <span id="cancelConfirmLoading" class="confirm-loading d-none">
+                        <span class="spinner-border spinner-border-sm"></span>
+                        Cancellazione...
+                    </span>
+                </button>
             </div>
         </div>
     </div>
@@ -385,7 +449,7 @@
                 
                 <div class="d-flex gap-2 mt-3">
                     ${['pending', 'confirmed'].includes(booking.status) ? `
-                        <button onclick="cancelBooking(${booking.id})" class="btn btn-light rounded-3 flex-fill">
+                        <button onclick="openCancelModal(${booking.id}, ${JSON.stringify(booking.pet.name)}, ${JSON.stringify(booking.service.name)})" class="btn btn-light rounded-3 flex-fill">
                             <i class="bi bi-x-circle me-2"></i>Cancella
                         </button>
                     ` : ''}
@@ -475,15 +539,38 @@
         }).join('');
     }
 
-    async function cancelBooking(bookingId) {
-        if (!confirm('Sei sicuro di voler cancellare questa prenotazione?')) {
-            return;
-        }
-        
+    let pendingCancelBookingId = null;
+
+    function openCancelModal(bookingId, petName, serviceName) {
+        pendingCancelBookingId = bookingId;
+        const text = petName && serviceName
+            ? `Stai per cancellare la prenotazione di ${petName} (${serviceName}). Una volta cancellata non sarà più recuperabile.`
+            : 'Stai per cancellare questa prenotazione. Una volta cancellata non sarà più recuperabile.';
+        document.getElementById('cancelModalText').textContent = text;
+        document.getElementById('bookingModalBackdrop').classList.add('show');
+        document.getElementById('cancelModal').classList.add('show');
+    }
+
+    function closeCancelModal() {
+        document.getElementById('bookingModalBackdrop').classList.remove('show');
+        document.getElementById('cancelModal').classList.remove('show');
+        pendingCancelBookingId = null;
+        document.getElementById('cancelConfirmLoading').classList.add('d-none');
+        document.getElementById('cancelConfirmText').classList.remove('d-none');
+        document.getElementById('cancelConfirmBtn').disabled = false;
+    }
+
+    async function confirmCancelBooking() {
+        if (!pendingCancelBookingId) return;
+
+        document.getElementById('cancelConfirmLoading').classList.remove('d-none');
+        document.getElementById('cancelConfirmText').classList.add('d-none');
+        document.getElementById('cancelConfirmBtn').disabled = true;
+
         const token = localStorage.getItem('token');
         
         try {
-            const response = await fetch(`${API_URL}/api/bookings/${bookingId}/cancel`, {
+            const response = await fetch(`${API_URL}/api/bookings/${pendingCancelBookingId}/cancel`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -495,13 +582,16 @@
             
             if (response.ok) {
                 showToast('Prenotazione cancellata con successo', 'success');
+                closeCancelModal();
                 await loadBookings();
             } else {
                 showToast(data.message || 'Errore durante la cancellazione', 'error');
+                closeCancelModal();
             }
         } catch (error) {
             console.error('Errore:', error);
             showToast('Errore di connessione', 'error');
+            closeCancelModal();
         }
     }
 </script>
